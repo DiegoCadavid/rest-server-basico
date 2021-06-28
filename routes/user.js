@@ -5,6 +5,9 @@ const router = Router();
 const Controller = require('../controllers/users');
 const { validateRol, validationEmail, validationMongoId} = require('../helpers/db-validators');
 const { validateFields } = require('../middlewares/validate-fields');
+const validateJwt = require('../middlewares/validate-jwt');
+const GoogleBolean = require('../middlewares/validateGoogleStatus');
+const {verifyAdminRole, VerifyRole} = require('../middlewares/validateRoles');
 
 router.get('/', Controller.getUsers);
 
@@ -29,6 +32,10 @@ router.post('/', [
 router.patch('/', Controller.patchUsers);
 
 router.delete('/:id', [
+    validateJwt,
+    // verifyAdminRole,
+    VerifyRole("user"),
+    GoogleBolean(true),
     check('id', 'No es un id valido').isMongoId(),
     check('id').custom(validationMongoId),
     validateFields

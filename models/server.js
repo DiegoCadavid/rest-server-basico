@@ -6,7 +6,8 @@ class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
-        this.usersPath = '/api/users'
+        this.usersPath = '/api/users';
+        this.authPath = '/api/auth'
 
         //Conectar db
         this.connectDB();
@@ -17,25 +18,26 @@ class Server {
         this.routes();
     }
 
-    middlewares () {
+    middlewares() {
         //Directorio publico
         this.app.use(express.static('public'));
 
         //Lectura y parseo del body
-        this.app.use( express.json());
+        this.app.use(express.json());
 
         //Cors
         this.app.use(cors());
     }
 
     //ConectarDB
-    async connectDB () {
+    async connectDB() {
         await dbConnection();
     }
 
     //Rutas
     routes() {
-       this.app.use(this.usersPath, require('../routes/user'));
+        this.app.use(this.authPath, require('../routes/auth'));
+        this.app.use(this.usersPath, require('../routes/user'));
     }
 
     listen() {

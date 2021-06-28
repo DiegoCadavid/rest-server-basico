@@ -23,7 +23,7 @@ const getUsers = async (req = request, res = response) => {
 const putUsers = async (req = request, res = response) => {
 
     const { id } = req.params;
-    const { _id, password, google, email, ...other } = req.body;
+    const { uid, password, google, email, ...other } = req.body;
 
     //Validar contra base de datos
     if (password) {
@@ -31,7 +31,8 @@ const putUsers = async (req = request, res = response) => {
         other.password = bcryptjs.hashSync(password, salt);
     }
 
-    const user = await User.findByIdAndUpdate(id, other);
+    await User.findByIdAndUpdate(id, other);
+    const user =  await User.findById(id);
 
     res.status(202).json({
         user
@@ -54,7 +55,6 @@ const postUsers = async (req = request, res = response) => {
 
     res.status(201).json({
         user
-
     });
 };
 
@@ -68,13 +68,15 @@ const patchUsers = (req = request, res = response) => {
 const deleteUsers = async(req = request, res = response) => {
     
     const { id } = req.params;
-    const user = await  User.findByIdAndUpdate(id, {status : false});
-    
+    await User.findByIdAndUpdate(id, {status : false});
 
+    const user = await User.findById(id);
+    const authUser = req.authUser;
 
     res.status(403).json({
         msg: 'Delete API - controlador',
-        user
+        user,
+        authUser
     });
 };
 
