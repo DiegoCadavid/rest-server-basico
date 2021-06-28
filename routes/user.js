@@ -35,7 +35,7 @@ router.delete('/:id', [
     validateJwt,
     // verifyAdminRole,
     VerifyRole("user"),
-    GoogleBolean(true),
+    GoogleBolean(false),
     check('id', 'No es un id valido').isMongoId(),
     check('id').custom(validationMongoId),
     validateFields
